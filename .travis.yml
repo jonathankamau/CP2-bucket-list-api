@@ -1,0 +1,19 @@
+language: python
+
+python:
+  - "3.5"
+
+install:
+  - pip install -r requirements.txt
+  - pip install codacy-coverage
+
+script:
+  - nosetests --with-coverage --cover-erase --cover-xml --cover-package=app
+
+after_success:
+  - python-codacy-coverage -r coverage.xml
+
+cache: pip
+
+notifications:
+  email: false
