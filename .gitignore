@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+bucketlist.sqlite
+db_repository/
+
 # Unit test / coverage reports
 htmlcov/
 .tox/
