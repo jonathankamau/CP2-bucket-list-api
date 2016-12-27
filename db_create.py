@@ -4,19 +4,16 @@
 import os.path
 from migrate.versioning import api
 
+import config
 from app import db
-from config import SQLALCHEMY_DATABASE_URI
-from config import SQLALCHEMY_MIGRATE_REPO
 
 db.create_all()
-if not os.path.exists(SQLALCHEMY_MIGRATE_REPO):
-    api.create(SQLALCHEMY_MIGRATE_REPO, 'database_repository')
-    api.version_control(SQLALCHEMY_DATABASE_URI,
-                        SQLALCHEMY_MIGRATE_REPO)
+if not os.path.exists(config.SQLALCHEMY_MIGRATE_REPO):
+    api.create(config.SQLALCHEMY_MIGRATE_REPO, 'database_repository')
+    api.version_control(config.SQLALCHEMY_DATABASE_URI, config.SQLALCHEMY_MIGRATE_REPO)
 else:
-    api.version_control(SQLALCHEMY_DATABASE_URI,
-                        SQLALCHEMY_MIGRATE_REPO,
-                        api.version(SQLALCHEMY_MIGRATE_REPO))
+    api.version_control(config.SQLALCHEMY_DATABASE_URI,config.SQLALCHEMY_MIGRATE_REPO,
+                        api.version(config.SQLALCHEMY_MIGRATE_REPO))
 
 
 
