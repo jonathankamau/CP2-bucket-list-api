@@ -4,17 +4,16 @@ import config
 from app import db, app
 
 
-class BaseTest(unittest.TestCase):
+class BaseTestCase(unittest.TestCase):
     def setUp(self):
         app.testing = True
-        self.client = app.test_client()
+        self.client = app.test_client(use_cookies=False)
 
         config.SQLALCHEMY_DATABASE_URI = 'sqlite://'
         app.config.from_object(config)
         db.create_all()
 
         # create test users and bucket list
-        response = self.client.get('/auth/register')
         db.session.commit()
 
     def tearDown(self):
