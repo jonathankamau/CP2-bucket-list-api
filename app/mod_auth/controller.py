@@ -3,11 +3,11 @@ from flask import Blueprint
 mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-@mod_auth.route('/register', methods=['GET', 'POST'])
+@mod_auth.route('/register/', methods=['POST'])
 def register():
-    pass
+    return ""
 
 
-@mod_auth.route('/login', methods=['POST'])
+@mod_auth.route('/login/', methods=['POST'])
 def login():
-    pass
+    return ""
