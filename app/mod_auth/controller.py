@@ -3,7 +3,7 @@ from flask import Blueprint
 mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-@mod_auth.route('/register', methods=['POST'])
+@mod_auth.route('/register', methods=['GET', 'POST'])
 def register():
     pass
 
