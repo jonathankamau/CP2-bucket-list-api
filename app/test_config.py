@@ -17,6 +17,7 @@ class BaseTestCase(unittest.TestCase):
         # TODO get token for user
         self.token = {'Authorization': 'token ' + 'Token'}
         self.expired_token = {'Authorization': 'token ' + 'Token'}
+        self.invalid_token = {'Authorization': 'token ' + 'abc'}
         db.session.commit()
 
     def tearDown(self):
