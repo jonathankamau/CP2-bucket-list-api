@@ -13,11 +13,11 @@ def get_bucketlist(id):
     return "not implmented"
 
 
-@mod_bucketlists.route('<id>/items/', methods=['POST'])
+@mod_bucketlists.route('/<id>/items/', methods=['POST'])
 def create_bucketlist_item(id):
     return "not implmented"
 
 
-@mod_bucketlists.route('<id>/items/<item_id>', methods=['PUT', 'DELETE'])
+@mod_bucketlists.route('/<id>/items/<item_id>', methods=['PUT', 'DELETE'])
 def modify_bucketlist_item(id, item_id):
     return "not implmented"
