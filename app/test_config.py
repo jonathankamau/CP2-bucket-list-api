@@ -13,7 +13,10 @@ class BaseTestCase(unittest.TestCase):
         app.config.from_object(config)
         db.create_all()
 
-        # create test users and bucket list
+        # TODO create test users and bucket list
+        # TODO get token for user
+        self.token = {'Authorization': 'token ' + 'Token'}
+        self.expired_token = {'Authorization': 'token ' + 'Token'}
         db.session.commit()
 
     def tearDown(self):
