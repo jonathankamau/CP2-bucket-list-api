@@ -1,0 +1,70 @@
+from app.test_config import BaseTestCase
+
+
+class BucketListItemTestCase(BaseTestCase):
+    def test_create_new_bucket_list_item(self):
+        data = {'name': 'Change Title Of Story',
+                'description': 'The Author changed the story hence the change'}
+        response = self.client.post('/bucketlists/1/items/', data=data, headers=self.token, follow_redirects=True)
+
+        self.assertEqual(201, response.status_code)
+
+        response = response.data.decode('utf-8')
+        self.assertIn('date_modified', response)
+        self.assertIn(data['name'], response)
+        self.assertIn(data['description'], response)
+        self.assertIn('successfully created bucketlist item', response)
+
+    def test_error_on_create_item_on_existent_bucketlist(self):
+        data = {'name': 'Change Title Of Story'}
+        response = self.client.post('/bucketlists/1/items/', data=data, headers=self.token, follow_redirects=True)
+
+        self.assertEqual(200, response.status_code)
+
+        response = response.data.decode('utf-8')
+        self.assertIn('error', response)
+        self.assertIn('bucketlist list does not exists', response)
+
+    def test_error_on_create_bucketlist_item_without_token(self):
+        data = {'name': 'Change Title Of Story'}
+        response = self.client.post('/bucketlists/1/items/', data=data, follow_redirects=True)
+
+        self.assertEqual(401, response.status_code)
+
+        response = response.data.decode('utf-8')
+        self.assertIn('error', response)
+        self.assertIn('no token', response)
+        self.assertIn('token not submitted', response)
+
+    def test_update_bucketlist_item_name_and_description(self):
+        data = {'name': 'Updated name for item',
+                'description': 'Test change name'}
+        response = self.client.post('/bucketlists/1/items/1', data=data, headers=self.token, follow_redirects=True)
+
+        self.assertEqual(200, response.status_code)
+
+        response = response.data.decode('utf-8')
+        self.assertIn('successfully updated the bucketlist item', response)
+        self.assertIn(data['name'], response)
+        self.assertIn(data['description'], response)
+
+    def test_update_bucketlist_item_to_done(self):
+        data = {'done': 'True'}
+        response = self.client.put('/bucketlists/1/items/1', data=data, headers=self.token, follow_redirects=True)
+
+        self.assertEqual(200, response.status_code)
+
+        response = response.data.decode('utf-8')
+        self.assertIn('True', response)
+        self.assertIn('successfully updated bucketlist item', response)
+
+    def test_error_on_updating_non_existent_bucketlist_item(self):
+        data = {'name': 'Updated name for item',
+                'description': 'Test change name'}
+        response = self.client.post('/bucketlists/1/items/100', data=data, headers=self.token, follow_redirects=True)
+
+        self.assertEqual(404, response.status_code)
+
+        response = response.data.decode('utf-8')
+        self.assertIn('error', response)
+        self.assertIn('bucketlist item not found', response)
