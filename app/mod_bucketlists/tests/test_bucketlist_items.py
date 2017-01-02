@@ -15,9 +15,9 @@ class BucketListItemTestCase(BaseTestCase):
         self.assertIn(data['description'], response)
         self.assertIn('successfully created bucketlist item', response)
 
-    def test_error_on_create_item_on_existent_bucketlist(self):
+    def test_error_on_create_item_on_non_existent_bucketlist(self):
         data = {'name': 'Change Title Of Story'}
-        response = self.client.post('/bucketlists/1/items/', data=data, headers=self.token, follow_redirects=True)
+        response = self.client.post('/bucketlists/100/items/', data=data, headers=self.token, follow_redirects=True)
 
         self.assertEqual(200, response.status_code)
 
