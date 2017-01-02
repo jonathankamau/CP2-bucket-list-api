@@ -4,7 +4,7 @@ from app.test_config import BaseTestCase
 class RegisterTestCase(BaseTestCase):
     def test_creates_new_user_successfully(self):
         response = self.client.post('/auth/register/', data={
-            'username': 'brian',
+            'username': 'user',
             'password': 'password'
         }, follow_redirects=True)
 
@@ -41,7 +41,7 @@ class RegisterTestCase(BaseTestCase):
 
     def test_registration_fails_using_existing_username(self):
         response = self.client.post('/auth/register/', data={
-            'username': 'user',
+            'username': 'brian',
             'password': 'password'
         }, follow_redirects=True)
 
