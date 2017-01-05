@@ -10,6 +10,7 @@ auth = HTTPTokenAuth('Token')
 
 user_id = 1
 
+
 @auth.verify_token
 def verify_token(token):
     """Receives token and verifies it, the username and time_created
@@ -40,7 +41,36 @@ def get_bucketlists():
                 } for bucket_list in bucket_lists
                 ]
         })
-    return "not implmented"
+    elif request.method == 'POST':
+        bucketlist_name = request.form.get('bucket_name')
+
+        if BucketList.query.filter_by(name=bucketlist_name).scalar():
+            return jsonify({
+                'error': {
+                    'message': 'unable to create new bucket list',
+                    'details': [
+                        {
+                            'target': 'bucket_name',
+                            'message': 'bucket with same name already exists'
+                        }
+                    ]
+                }
+            }), 400
+
+        bucket_list = BucketList(bucketlist_name, user_id)
+        bucket_list.save()
+        bucket_list.refresh_from_db()
+
+        return jsonify({
+            'data': {
+                'id': bucket_list.id,
+                'name': bucket_list.name,
+                'created_by': bucket_list.created_by,
+                'date_created': bucket_list.date_created,
+                'date_modified': bucket_list.date_modified
+            },
+            'message': 'new BucketList created successfully'
+        }), 201
 
 
 @mod_bucketlists.route('/<id>', methods=['GET', 'PUT', 'DELETE'])
