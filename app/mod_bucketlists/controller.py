@@ -118,6 +118,19 @@ def get_bucketlist(id):
         if not new_bucketlist_name:
             return 'no name'
 
+        if new_bucketlist_name == bucket_list.name:
+            return jsonify({
+                'error': {
+                    'message': 'new BucketList name is equal to new name',
+                    'details': [
+                        {
+                            'target': 'name',
+                            'message': 'new BucketList name is equal to new name'
+                        }
+                    ]
+                }
+            }), 400
+
         bucket_list.name = new_bucketlist_name
         bucket_list.save()
         bucket_list.refresh_from_db()
