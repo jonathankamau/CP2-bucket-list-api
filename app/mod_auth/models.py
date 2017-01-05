@@ -1,8 +1,6 @@
-from datetime import datetime
-
 from flask_bcrypt import generate_password_hash, check_password_hash
 
-from app import db
+from app import db, token_signer
 
 
 class User(db.Model):
@@ -13,18 +11,19 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(20), unique=True, index=True)
     password_hash = db.Column(db.BINARY(60))
-    date_created = db.Column(db.DATETIME, default=datetime.utcnow())
+    date_created = db.Column(db.DATETIME, default=db.func.current_timestamp())
     token = db.Column(db.String)
 
     def __init__(self, username, password):
         self.username = username
         self.password_hash = generate_password_hash(password)
+        self.token = self.generate_auth_token()
 
     def verify_password_hash(self, password):
         return check_password_hash(self.password_hash, password)
 
     def generate_auth_token(self):
-        pass
+        return token_signer.sign(str(self.username))
 
     def save(self):
         db.session.add(self)

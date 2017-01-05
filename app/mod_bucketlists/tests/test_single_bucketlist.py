@@ -64,7 +64,7 @@ class SingleBucketListTestCase(BaseTestCase):
         self.assertIn('target', response)
 
     def test_error_on_updating_bucketlist_name_to_existing_name(self):
-        data = {'name': 'Bucket List'}  # TODO set backet name from config
+        data = {'name': 'Checkpoint'}
         response = self.client.post('/bucketlists/1', data=data, headers=self.token, follow_redirects=True)
 
         self.assertEqual(400, response.status_code)

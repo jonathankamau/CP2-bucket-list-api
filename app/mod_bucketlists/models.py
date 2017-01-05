@@ -7,7 +7,7 @@ class BucketList(db.Model):
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     name = db.Column(db.String(125), nullable=False)
     date_created = db.Column(db.DATETIME, default=db.func.current_timestamp())
-    date_modified = db.Column(db.DATETIME, onupdate=db.func.current_timestamp())
+    date_modified = db.Column(db.DATETIME, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
     created_by = db.Column(db.Integer, db.ForeignKey(User.id))
 
     def __init__(self, name, created_by):

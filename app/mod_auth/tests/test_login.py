@@ -41,6 +41,7 @@ class LoginTestCase(BaseTestCase):
 
     def test_login_fails_invalid_credentials(self):
         response = self.client.post('/auth/login/', data={
+            'username': 'john',
             'password': 'password'
         }, follow_redirects=True)
 
