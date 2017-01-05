@@ -23,7 +23,8 @@ class BucketListTestCase(BaseTestCase):
 
         response = response.data.decode('utf-8')
         self.assertIn('data', response)
-        self.assertIn('items', response)
+        self.assertIn('Checkpoint', response)
+        self.assertIn('created_by', response)
         self.assertIn('date_created', response)
 
     def test_error_on_bucketlist_creation_with_invalid_token(self):
