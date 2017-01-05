@@ -3,7 +3,7 @@ from flask_httpauth import HTTPTokenAuth
 from itsdangerous import BadTimeSignature, BadSignature
 
 from app import token_signer
-from app.mod_bucketlists.models import BucketList
+from app.mod_bucketlists.models import BucketList, BucketListItem
 
 mod_bucketlists = Blueprint('bucketlists', __name__, url_prefix='/bucketlists')
 auth = HTTPTokenAuth('Token')
@@ -75,6 +75,43 @@ def get_bucketlists():
 
 @mod_bucketlists.route('/<id>', methods=['GET', 'PUT', 'DELETE'])
 def get_bucketlist(id):
+    bucket_list = BucketList.query.filter_by(id=id).scalar()
+
+    if not bucket_list:
+        return jsonify({
+            'error': {
+                'message': 'bucket list not found',
+                'details': [
+                    {
+                        'target': 'id',
+                        'message': 'BucketList with id provided not found'
+                    }
+                ]
+            }
+        }), 404
+
+    if request.method == 'GET':
+        bucket_list_items = BucketListItem.query.filter_by(bucketlist_id=bucket_list.id).all()
+
+        return jsonify({
+            'data': {
+                'id': bucket_list.id,
+                'name': bucket_list.name,
+                'date_created': bucket_list.date_created,
+                'date_modified': bucket_list.date_modified,
+                'created_by': bucket_list.created_by,
+                'items': [
+                    {
+                        'id': bucket_list_item.id,
+                        'name': bucket_list_item.name,
+                        'date_created': bucket_list_item.date_created,
+                        'date_modified': bucket_list_item.date_modified,
+                        'done': bucket_list_item.done
+                    } for bucket_list_item in bucket_list_items
+                    ]
+            }
+        })
+
     return "not implmented"
 
 
