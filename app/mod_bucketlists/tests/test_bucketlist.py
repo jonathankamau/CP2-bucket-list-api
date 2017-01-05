@@ -52,16 +52,3 @@ class BucketListTestCase(BaseTestCase):
         self.assertIn('error', response)
         self.assertIn('unable to create bucketlist', response)
         self.assertIn('expired token', response)
-
-    def test_error_on_bucketlist_creation_with_empty_name(self):
-        data = {
-            'bucket_name': ''
-        }
-        response = self.client.post('/bucketlists/', data=data, headers=self.token, follow_redirects=True)
-
-        self.assertEqual(400, response.status_code)
-
-        response = response.data.decode('utf-8')
-        self.assertIn('error', response)
-        self.assertIn('unable to create bucketlist', response)
-        self.assertIn('expired token', response)

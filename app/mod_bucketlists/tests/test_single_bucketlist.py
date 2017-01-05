@@ -52,17 +52,6 @@ class SingleBucketListTestCase(BaseTestCase):
         self.assertIn('updated bucketlist name', response)
         self.assertIn(data['name'], response)
 
-    def test_error_updating_bucketlist_with_empty_name(self):
-        data = {'name': ''}
-        response = self.client.post('/bucketlists/1', data=data, headers=self.token, follow_redirects=True)
-
-        self.assertEqual(400, response.status_code)
-
-        response = response.data.decode('utf-8')
-        self.assertIn('error', response)
-        self.assertIn('BucketList name is empty', response)
-        self.assertIn('target', response)
-
     def test_error_on_updating_bucketlist_name_to_existing_name(self):
         data = {'name': 'Checkpoint'}
         response = self.client.post('/bucketlists/1', data=data, headers=self.token, follow_redirects=True)
