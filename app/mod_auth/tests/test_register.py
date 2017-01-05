@@ -3,15 +3,16 @@ from app.test_config import BaseTestCase
 
 class RegisterTestCase(BaseTestCase):
     def test_creates_new_user_successfully(self):
-        response = self.client.post('/auth/register/', data={
+        data = {
             'username': 'user',
             'password': 'password'
-        }, follow_redirects=True)
+        }
+        response = self.client.post('/auth/register/', data=data, follow_redirects=True)
 
         self.assertEqual(201, response.status_code)
 
         response = response.data.decode('utf-8')
-        self.assertIn('brian', response)
+        self.assertIn(data['username'], response)
         self.assertIn('new user created successfully', response)
 
     def test_registration_fails_no_username(self):
