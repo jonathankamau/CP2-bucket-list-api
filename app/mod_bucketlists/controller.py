@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_httpauth import HTTPTokenAuth
 from itsdangerous import BadTimeSignature, BadSignature
 
-from app import token_signer
+from app import token_signer, db
 from app.mod_bucketlists.models import BucketList, BucketListItem
 
 mod_bucketlists = Blueprint('bucketlists', __name__, url_prefix='/bucketlists')
@@ -75,7 +75,7 @@ def get_bucketlists():
 
 @mod_bucketlists.route('/<id>', methods=['GET', 'PUT', 'DELETE'])
 def get_bucketlist(id):
-    bucket_list = BucketList.query.filter_by(id=id).scalar()
+    bucket_list = BucketList.query.filter_by(id=id, created_by=user_id).scalar()
 
     if not bucket_list:
         return jsonify({
@@ -133,7 +133,17 @@ def get_bucketlist(id):
             'message': 'updated bucketlist name'
         })
 
-    return "not implmented"
+    elif request.method == 'DELETE':
+
+        BucketList.query.filter_by(id=id, created_by=user_id).delete()
+        db.session.commit()
+
+        if not BucketList.query.filter_by(id=id, created_by=user_id).scalar():
+            return jsonify({
+                'data': {
+                    'message': 'successfully deleted bucketlist'
+                }
+            })
 
 
 @mod_bucketlists.route('/<id>/items/', methods=['POST'])
