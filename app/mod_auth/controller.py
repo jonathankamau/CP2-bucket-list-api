@@ -65,4 +65,48 @@ def register():
 
 @mod_auth.route('/login/', methods=['POST'])
 def login():
-    return ""
+    username = request.form.get('username')
+    password = request.form.get('password')
+
+    if not username:
+        return jsonify({
+            'error': {
+                'message': 'unable to login user',
+                'details': [
+                    {
+                        'target': 'username',
+                        'message': 'username data field missing/empty from POST request'
+                    }
+                ]
+            }
+        }), 400
+
+    if not password:
+        return jsonify({
+            'error': {
+                'message': 'unable to login user',
+                'details': [
+                    {
+                        'target': 'password',
+                        'message': 'password data field missing/empty from POST request'
+                    }
+                ]
+            }
+        }), 400
+
+    user = User.query.filter_by(username=username).first()
+
+    if user and user.verify_password_hash(password):
+        return jsonify({
+            'data': {
+                'message': 'login successful. Use token for authentication for the API',
+                'username': user.username,
+                'token': str(user.token)
+            }
+        })
+
+    return jsonify({
+        'error': {
+            'message': 'invalid username/password combination'
+        }
+    }), 401
