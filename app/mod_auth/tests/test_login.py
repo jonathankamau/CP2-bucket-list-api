@@ -25,7 +25,7 @@ class LoginTestCase(BaseTestCase):
         response = response.data.decode('utf-8')
         self.assertIn('error', response)
         self.assertIn('unable to login user', response)
-        self.assertIn('username data field missing from POST request', response)
+        self.assertIn('username data field missing/empty from POST request', response)
 
     def test_login_fails_no_password_submitted(self):
         response = self.client.post('/auth/login/', data={
@@ -37,7 +37,7 @@ class LoginTestCase(BaseTestCase):
         response = response.data.decode('utf-8')
         self.assertIn('error', response)
         self.assertIn('unable to login user', response)
-        self.assertIn('password data field missing from POST request', response)
+        self.assertIn('password data field missing/empty from POST request', response)
 
     def test_login_fails_invalid_credentials(self):
         response = self.client.post('/auth/login/', data={
