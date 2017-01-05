@@ -11,9 +11,9 @@ class LoginTestCase(BaseTestCase):
         self.assertEqual(200, response.status_code)
 
         response = response.data.decode('utf-8')
-        self.assertIn('data: ', response)
+        self.assertIn('data', response)
         self.assertIn('brian', response)
-        self.assertIn('token: ', response)
+        self.assertIn('token', response)
 
     def test_login_fails_no_username_submitted(self):
         response = self.client.post('/auth/login/', data={
@@ -46,6 +46,7 @@ class LoginTestCase(BaseTestCase):
         }, follow_redirects=True)
 
         self.assertEqual(401, response.status_code)
+
+        response = response.data.decode('utf-8')
         self.assertIn('error', response)
-        self.assertIn('unable to login user', response)
         self.assertIn('invalid username/password combination', response)
