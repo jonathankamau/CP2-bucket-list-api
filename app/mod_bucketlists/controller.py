@@ -112,6 +112,27 @@ def get_bucketlist(id):
             }
         })
 
+    elif request.method == 'PUT':
+        new_bucketlist_name = request.form.get('name')
+
+        if not new_bucketlist_name:
+            return 'no name'
+
+        bucket_list.name = new_bucketlist_name
+        bucket_list.save()
+        bucket_list.refresh_from_db()
+
+        return jsonify({
+            'data': {
+                'id': bucket_list.id,
+                'name': bucket_list.name,
+                'date_created': bucket_list.date_created,
+                'date_modified': bucket_list.date_modified,
+                'created_by': bucket_list.created_by
+            },
+            'message': 'updated bucketlist name'
+        })
+
     return "not implmented"
 
 
