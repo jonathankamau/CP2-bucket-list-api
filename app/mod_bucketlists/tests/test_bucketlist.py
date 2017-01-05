@@ -27,7 +27,7 @@ class BucketListTestCase(BaseTestCase):
         self.assertIn('date_created', response)
 
     def test_error_on_bucketlist_creation_with_invalid_token(self):
-        token = {'Authorization': 'token ' + 'abcd'}
+        token = {'Authorization': 'Token ' + 'abcd'}
         data = {
             'bucket_name': 'Christmas'
         }
