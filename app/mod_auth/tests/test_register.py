@@ -51,15 +51,3 @@ class RegisterTestCase(BaseTestCase):
         self.assertIn('error', response)
         self.assertIn('unable to create user', response)
         self.assertIn('username already registered', response)
-
-    def test_registration_fails_on_empty_password_and_username(self):
-        response = self.client.post('/auth/register/', data={
-            'username': '',
-            'password': ''
-        }, follow_redirects=True)
-
-        response = response.data.decode('utf-8')
-        self.assertIn('error', response)
-        self.assertIn('unable to create user', response)
-        self.assertIn('username data field is empty', response)
-        self.assertIn('password data field is empty', response)
