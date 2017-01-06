@@ -116,7 +116,17 @@ def get_bucketlist(id):
         new_bucketlist_name = request.form.get('name')
 
         if not new_bucketlist_name:
-            return 'no name'
+            return jsonify({
+                'error': {
+                    'message': 'unable to create new bucket list item',
+                    'details': [
+                        {
+                            'target': 'name',
+                            'message': 'name data field missing/empty from POST request'
+                        }
+                    ]
+                }
+            }), 400
 
         if new_bucketlist_name == bucket_list.name:
             return jsonify({
@@ -215,4 +225,32 @@ def create_bucketlist_item(id):
 
 @mod_bucketlists.route('/<id>/items/<item_id>', methods=['PUT', 'DELETE'])
 def modify_bucketlist_item(id, item_id):
-    return "not implmented"
+    bucketlist_item = BucketListItem.query.filter_by(bucketlist_id=id, id=item_id).scalar()
+
+    if not bucketlist_item:
+        return jsonify({
+            'error': {
+                'message': 'bucketlist item not found'
+            }
+        }), 404
+
+    if request.method == 'PUT':
+        bucketlist_item.name = request.form.get('name', bucketlist_item.name)
+        bucketlist_item.done = request.form.get('done', bucketlist_item.done)
+        bucketlist_item.description = request.form.get('description', bucketlist_item.description)
+
+        bucketlist_item.save()
+        bucketlist_item.refresh_from_db()
+
+        return jsonify({
+            'message': 'successfully updated bucketlist item',
+            'data': {
+                'id': bucketlist_item.id,
+                'name': bucketlist_item.name,
+                'description': bucketlist_item.description,
+                'date_created': bucketlist_item.date_created,
+                'date_modified': bucketlist_item.date_modified,
+                'done': bucketlist_item.done
+            }
+
+        })
