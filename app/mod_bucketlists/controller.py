@@ -161,7 +161,56 @@ def get_bucketlist(id):
 
 @mod_bucketlists.route('/<id>/items/', methods=['POST'])
 def create_bucketlist_item(id):
-    return "not implmented"
+    bucket_list = BucketList.query.filter_by(id=id, created_by=user_id).scalar()
+
+    if not bucket_list:
+        return jsonify({
+            'error': {
+                'message': 'bucketlist list does not exists'
+            }
+        }), 404
+
+    if request.method == 'POST':
+        name = request.form.get('name')
+        description = request.form.get('description')
+
+        if not name:
+            return jsonify({
+                'error': {
+                    'message': 'unable to create bucketlist item',
+                    'details': [
+                        {
+                            'target': 'name',
+                            'message': 'name data field missing/empty from POST request'
+                        }
+                    ]
+                }
+            }), 400
+
+        bucketlist_item = BucketListItem.query.filter_by(name=name).all()
+
+        if bucketlist_item:
+            return jsonify({
+                'error': {
+                    'message': 'cannot create bucketlist item'
+                }
+            }), 403
+
+        bucketlist_item = BucketListItem(name, description, bucket_list.id)
+        bucketlist_item.save()
+        bucketlist_item.refresh_from_db()
+
+        return jsonify({
+            'message': 'successfully created bucketlist items',
+            'data': {
+                'id': bucketlist_item.id,
+                'name': bucketlist_item.name,
+                'description': bucketlist_item.description,
+                'date_created': bucketlist_item.date_created,
+                'date_modified': bucketlist_item.date_modified,
+                'done': bucketlist_item.done
+            }
+        }), 201
 
 
 @mod_bucketlists.route('/<id>/items/<item_id>', methods=['PUT', 'DELETE'])
