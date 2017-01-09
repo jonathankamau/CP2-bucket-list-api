@@ -1,28 +1,64 @@
-from flask import Blueprint, request, jsonify
-from flask import abort
+from flask import Blueprint, request, jsonify, abort
 from flask_httpauth import HTTPTokenAuth
 from itsdangerous import BadTimeSignature, BadSignature
 
-from app import token_signer, db
+from app import token_signer, db, app
+from app.mod_auth.models import User
 from app.mod_bucketlists.models import BucketList, BucketListItem
 
 mod_bucketlists = Blueprint('bucketlists', __name__, url_prefix='/bucketlists')
 auth = HTTPTokenAuth('Token')
 
-user_id = 1
+user_id = None
+
+
+@app.errorhandler(401)
+def custom401(error):
+    return jsonify(error.description), 401
+
+
+@app.errorhandler(403)
+def custom400(error):
+    return jsonify(error.description), 403
 
 
 @auth.verify_token
 def verify_token(token):
     """Receives token and verifies it, the username and time_created
      must return True or False"""
-    if token:  # TODO fix the token validation clause
+    if token:
         try:
-            user_name, time_created = token_signer.unsign(token, return_timestamp=True)  # TODO get user id
-            return True
-        except (BadTimeSignature, BadSignature)as e:
-            abort(403)
-    abort(401)
+            user_name = token_signer.unsign(token)
+
+            user = User.query.filter_by(username=user_name.decode()).scalar()
+
+            if user:
+                global user_id
+                user_id = user.id
+
+                if token != user.token.decode():
+                    abort(403, {
+                        'error': {
+                            'message': 'expired token supplied',
+                            'target': 'token'
+                        }
+                    })
+
+                return True
+        except (BadTimeSignature, BadSignature):
+            abort(403, {
+                'error': {
+                    'message': 'invalid token supplied',
+                    'target': 'token'
+                }
+            })
+
+    return abort(401, {
+        'error': {
+            'message': 'no token to submitted',
+            'target': 'token'
+        }
+    })
 
 
 @mod_bucketlists.route('/', methods=['GET', 'POST'])
