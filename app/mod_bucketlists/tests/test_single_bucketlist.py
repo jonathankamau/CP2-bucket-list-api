@@ -27,7 +27,6 @@ class SingleBucketListTestCase(BaseTestCase):
         response = response.data.decode('utf-8')
         self.assertIn('error', response)
         self.assertIn('invalid token', response)
-        self.assertIn('target', response)
 
     def test_error_on_getting_bucketlist_with_expired_token(self):
         response = self.client.get('/bucketlists/1', headers=self.expired_token, follow_redirects=True)
@@ -37,7 +36,6 @@ class SingleBucketListTestCase(BaseTestCase):
         response = response.data.decode('utf-8')
         self.assertIn('error', response)
         self.assertIn('expired token', response)
-        self.assertIn('target', response)
 
     def test_updates_bucketlist_name(self):
         data = {'name': 'New Bucket'}
@@ -51,12 +49,11 @@ class SingleBucketListTestCase(BaseTestCase):
         data = {'name': 'Checkpoint'}
         response = self.client.put('/bucketlists/1', data=data, headers=self.token, follow_redirects=True)
 
-        self.assertEqual(400, response.status_code)
+        self.assertEqual(403, response.status_code)
 
         response = response.data.decode('utf-8')
         self.assertIn('error', response)
         self.assertIn('new BucketList name is equal to new name', response)
-        self.assertIn('target', response)
 
     def test_deletes_users_bucketlist(self):
         response = self.client.delete('/bucketlists/1', headers=self.token, follow_redirects=True)

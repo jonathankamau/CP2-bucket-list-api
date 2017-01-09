@@ -24,17 +24,15 @@ class BucketListTestCase(BaseTestCase):
         self.assertIn('date_created', response)
 
     def test_error_on_bucketlist_creation_with_invalid_token(self):
-        token = {'Authorization': 'Token ' + 'abcd'}
         data = {
             'bucket_name': 'Christmas'
         }
-        response = self.client.post('/bucketlists/', data=data, headers=token, follow_redirects=True)
+        response = self.client.post('/bucketlists/', data=data, headers=self.invalid_token, follow_redirects=True)
 
-        self.assertEqual(400, response.status_code)
+        self.assertEqual(403, response.status_code)
 
         response = response.data.decode('utf-8')
         self.assertIn('error', response)
-        self.assertIn('unable to create bucketlist', response)
         self.assertIn('invalid token', response)
 
     def test_error_on_bucketlist_creation_with_expired_token(self):
@@ -43,9 +41,8 @@ class BucketListTestCase(BaseTestCase):
         }
         response = self.client.post('/bucketlists/', data=data, headers=self.expired_token, follow_redirects=True)
 
-        self.assertEqual(400, response.status_code)
+        self.assertEqual(403, response.status_code)
 
         response = response.data.decode('utf-8')
         self.assertIn('error', response)
-        self.assertIn('unable to create bucketlist', response)
         self.assertIn('expired token', response)
