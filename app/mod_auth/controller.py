@@ -101,7 +101,7 @@ def login():
             'data': {
                 'message': 'login successful. Use token for authentication for the API',
                 'username': user.username,
-                'token': str(user.token)
+                'token': user.token.decode()
             }
         })
 
