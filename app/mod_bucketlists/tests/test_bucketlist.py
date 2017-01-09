@@ -11,7 +11,6 @@ class BucketListTestCase(BaseTestCase):
         self.assertEqual(201, response.status_code)
 
         response = response.data.decode('utf-8')
-        self.assertIn('data', response)
         self.assertIn('new BucketList created successfully', response)
         self.assertIn(data['bucket_name'], response)
         self.assertIn('date_created', response)
@@ -19,10 +18,7 @@ class BucketListTestCase(BaseTestCase):
     def test_gets_bucketlist_names_for_the_user(self):
         response = self.client.get('/bucketlists/', headers=self.token, follow_redirects=True)
 
-        self.assertEqual(200, response.status_code)
-
         response = response.data.decode('utf-8')
-        self.assertIn('data', response)
         self.assertIn('Checkpoint', response)
         self.assertIn('created_by', response)
         self.assertIn('date_created', response)

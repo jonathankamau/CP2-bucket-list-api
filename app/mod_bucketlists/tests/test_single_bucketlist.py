@@ -5,10 +5,7 @@ class SingleBucketListTestCase(BaseTestCase):
     def test_get_single_bucketlist(self):
         response = self.client.get('/bucketlists/1', headers=self.token, follow_redirects=True)
 
-        self.assertEqual(200, response.status_code)
-
         response = response.data.decode('utf-8')
-        self.assertIn('data', response)
         self.assertIn('items', response)
         self.assertIn('date_created', response)
         self.assertIn('created_by', response)
@@ -46,8 +43,6 @@ class SingleBucketListTestCase(BaseTestCase):
         data = {'name': 'New Bucket'}
         response = self.client.put('/bucketlists/1', data=data, headers=self.token, follow_redirects=True)
 
-        self.assertEqual(200, response.status_code)
-
         response = response.data.decode('utf-8')
         self.assertIn('updated bucketlist name', response)
         self.assertIn(data['name'], response)
@@ -66,8 +61,5 @@ class SingleBucketListTestCase(BaseTestCase):
     def test_deletes_users_bucketlist(self):
         response = self.client.delete('/bucketlists/1', headers=self.token, follow_redirects=True)
 
-        self.assertEqual(200, response.status_code)
-
         response = response.data.decode('utf-8')
-        self.assertIn('data', response)
         self.assertIn('successfully deleted bucketlist', response)

@@ -41,8 +41,6 @@ class BucketListItemTestCase(BaseTestCase):
                 'description': 'Test change name'}
         response = self.client.put('/bucketlists/1/items/1', data=data, headers=self.token, follow_redirects=True)
 
-        self.assertEqual(200, response.status_code)
-
         response = response.data.decode('utf-8')
         self.assertIn('successfully updated bucketlist item', response)
         self.assertIn(data['name'], response)
@@ -51,8 +49,6 @@ class BucketListItemTestCase(BaseTestCase):
     def test_update_bucketlist_item_to_done(self):
         data = {'done': 'true'}
         response = self.client.put('/bucketlists/1/items/1', data=data, headers=self.token, follow_redirects=True)
-
-        self.assertEqual(200, response.status_code)
 
         response = response.data.decode('utf-8')
         self.assertIn('true', response)
