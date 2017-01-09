@@ -33,8 +33,7 @@ class BucketListItemTestCase(BaseTestCase):
 
         response = response.data.decode('utf-8')
         self.assertIn('error', response)
-        self.assertIn('no token', response)
-        self.assertIn('token not submitted', response)
+        self.assertIn('no token to submitted', response)
 
     def test_update_bucketlist_item_name_and_description(self):
         data = {'name': 'Updated name for item',

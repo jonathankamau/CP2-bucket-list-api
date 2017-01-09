@@ -11,7 +11,6 @@ class RegisterTestCase(BaseTestCase):
         self.assertEqual(201, response.status_code)
 
         response = response.data.decode('utf-8')
-        self.assertIn('data', response)
         self.assertIn('brian', response)
         self.assertIn('new user created successfully', response)
 
