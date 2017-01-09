@@ -177,7 +177,7 @@ def get_bucketlist(id):
                         }
                     ]
                 }
-            }), 400
+            }), 403
 
         bucket_list.name = new_bucketlist_name
         bucket_list.save()
