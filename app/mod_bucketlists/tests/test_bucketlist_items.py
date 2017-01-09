@@ -28,7 +28,7 @@ class BucketListItemTestCase(BaseTestCase):
         data = {'name': 'Change Title Of Story'}
         response = self.client.post('/bucketlists/1/items/', data=data, follow_redirects=True)
 
-        self.assertEqual(401, response.status_code)
+        self.assertEqual(400, response.status_code)
 
         response = response.data.decode('utf-8')
         self.assertIn('error', response)
