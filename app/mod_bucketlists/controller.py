@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask import abort
 from flask_httpauth import HTTPTokenAuth
 from itsdangerous import BadTimeSignature, BadSignature
 
@@ -20,12 +21,12 @@ def verify_token(token):
             user_name, time_created = token_signer.unsign(token, return_timestamp=True)  # TODO get user id
             return True
         except (BadTimeSignature, BadSignature)as e:
-            return True  # TODO return message on token failure
-
-    return False
+            abort(403)
+    abort(401)
 
 
 @mod_bucketlists.route('/', methods=['GET', 'POST'])
+@auth.login_required
 def get_bucketlists():
     if request.method == 'GET':
         bucket_lists = BucketList.query.filter_by(created_by=user_id).all()
@@ -74,6 +75,7 @@ def get_bucketlists():
 
 
 @mod_bucketlists.route('/<id>', methods=['GET', 'PUT', 'DELETE'])
+@auth.login_required
 def get_bucketlist(id):
     bucket_list = BucketList.query.filter_by(id=id, created_by=user_id).scalar()
 
@@ -170,6 +172,7 @@ def get_bucketlist(id):
 
 
 @mod_bucketlists.route('/<id>/items/', methods=['POST'])
+@auth.login_required
 def create_bucketlist_item(id):
     bucket_list = BucketList.query.filter_by(id=id, created_by=user_id).scalar()
 
@@ -224,6 +227,7 @@ def create_bucketlist_item(id):
 
 
 @mod_bucketlists.route('/<id>/items/<item_id>', methods=['PUT', 'DELETE'])
+@auth.login_required
 def modify_bucketlist_item(id, item_id):
     bucketlist_item = BucketListItem.query.filter_by(bucketlist_id=id, id=item_id).scalar()
 
