@@ -41,8 +41,8 @@ class BaseTestCase(unittest.TestCase):
         db.session.commit()
 
         self.token = {'Authorization': 'Token ' + str(self.brian.token)}
-        self.expired_token = {'Authorization': 'Token ' + "b'brian.C0-S_w.3D7n2H9j6hrs1jicEEjifLO-fDc'"}
-        self.invalid_token = {'Authorization': 'Token ' + 'abc'}
+        self.expired_token = {'Authorization': 'Token {}'.format('brian.C0-S_w.3D7n2H9j6hrs1jicEEjifLO-fDc')}
+        self.invalid_token = {'Authorization': 'Token abc'}
         db.session.commit()
 
     def tearDown(self):
