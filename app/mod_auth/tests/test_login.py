@@ -8,10 +8,8 @@ class LoginTestCase(BaseTestCase):
             'password': 'password'
         }, follow_redirects=True)
 
-        self.assertEqual(200, response.status_code)
-
         response = response.data.decode('utf-8')
-        self.assertIn('data', response)
+
         self.assertIn('brian', response)
         self.assertIn('token', response)
 
