@@ -22,7 +22,7 @@ class SingleBucketListTestCase(BaseTestCase):
     def test_error_on_getting_bucketlist_with_invalid_token(self):
         response = self.client.get('/bucketlists/1', headers=self.invalid_token, follow_redirects=True)
 
-        self.assertEqual(400, response.status_code)
+        self.assertEqual(403, response.status_code)
 
         response = response.data.decode('utf-8')
         self.assertIn('error', response)
@@ -31,7 +31,7 @@ class SingleBucketListTestCase(BaseTestCase):
     def test_error_on_getting_bucketlist_with_expired_token(self):
         response = self.client.get('/bucketlists/1', headers=self.expired_token, follow_redirects=True)
 
-        self.assertEqual(401, response.status_code)
+        self.assertEqual(403, response.status_code)
 
         response = response.data.decode('utf-8')
         self.assertIn('error', response)
