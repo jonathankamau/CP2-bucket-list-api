@@ -11,7 +11,6 @@ class BucketListTestCase(BaseTestCase):
         self.assertEqual(201, response.status_code)
 
         response = response.data.decode('utf-8')
-        self.assertIn('new BucketList created successfully', response)
         self.assertIn(data['bucket_name'], response)
         self.assertIn('date_created', response)
 
