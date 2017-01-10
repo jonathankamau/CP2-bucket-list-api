@@ -56,10 +56,8 @@ def register():
     user.refresh_from_db()
 
     return jsonify({
-        'data': {
             'username': user.username,
             'message': 'new user created successfully'
-        }
     }), 201
 
 
@@ -98,11 +96,9 @@ def login():
 
     if user and user.verify_password_hash(password):
         return jsonify({
-            'data': {
                 'message': 'login successful. Use token for authentication for the API',
                 'username': user.username,
                 'token': user.token.decode()
-            }
         })
 
     return jsonify({
