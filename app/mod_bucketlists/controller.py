@@ -99,11 +99,11 @@ def get_bucketlists():
         bucket_list.refresh_from_db()
 
         return jsonify({
-                'id': bucket_list.id,
-                'name': bucket_list.name,
-                'created_by': bucket_list.created_by,
-                'date_created': bucket_list.date_created,
-                'date_modified': bucket_list.date_modified
+            'id': bucket_list.id,
+            'name': bucket_list.name,
+            'created_by': bucket_list.created_by,
+            'date_created': bucket_list.date_created,
+            'date_modified': bucket_list.date_modified
         }), 201
 
 
@@ -195,7 +195,7 @@ def get_bucketlist(id):
 
         if not BucketList.query.filter_by(id=id, created_by=user_id).scalar():
             return jsonify({
-                    'message': 'successfully deleted bucketlist'
+                'message': 'successfully deleted bucketlist'
             })
 
 
@@ -242,12 +242,12 @@ def create_bucketlist_item(id):
         bucketlist_item.refresh_from_db()
 
         return jsonify({
-                'id': bucketlist_item.id,
-                'name': bucketlist_item.name,
-                'description': bucketlist_item.description,
-                'date_created': bucketlist_item.date_created,
-                'date_modified': bucketlist_item.date_modified,
-                'done': bucketlist_item.done
+            'id': bucketlist_item.id,
+            'name': bucketlist_item.name,
+            'description': bucketlist_item.description,
+            'date_created': bucketlist_item.date_created,
+            'date_modified': bucketlist_item.date_modified,
+            'done': bucketlist_item.done
         }), 201
 
 
@@ -264,19 +264,27 @@ def modify_bucketlist_item(id, item_id):
         }), 404
 
     if request.method == 'PUT':
+        done_status = request.form.get('done', '').lower()
+        if done_status and done_status not in ('true', 'false'):
+            return jsonify({
+                'error': {
+                    'message': 'done status should be true or false'
+                }
+            }), 400
+
         bucketlist_item.name = request.form.get('name', bucketlist_item.name)
-        bucketlist_item.done = request.form.get('done', bucketlist_item.done)
+        bucketlist_item.done = done_status == 'true'
         bucketlist_item.description = request.form.get('description', bucketlist_item.description)
 
         bucketlist_item.save()
         bucketlist_item.refresh_from_db()
 
         return jsonify({
-                'id': bucketlist_item.id,
-                'name': bucketlist_item.name,
-                'description': bucketlist_item.description,
-                'date_created': bucketlist_item.date_created,
-                'date_modified': bucketlist_item.date_modified,
-                'done': bucketlist_item.done
+            'id': bucketlist_item.id,
+            'name': bucketlist_item.name,
+            'description': bucketlist_item.description,
+            'date_created': bucketlist_item.date_created,
+            'date_modified': bucketlist_item.date_modified,
+            'done': bucketlist_item.done
 
         })
