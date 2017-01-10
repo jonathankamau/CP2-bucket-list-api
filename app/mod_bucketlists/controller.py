@@ -6,6 +6,10 @@ from app import token_signer, db, app
 from app.mod_auth.models import User
 from app.mod_bucketlists.models import BucketList, BucketListItem
 
+"""
+Creates the bucketlist and manipulates the items in  the bucketlist
+"""
+
 mod_bucketlists = Blueprint('bucketlists', __name__, url_prefix='/bucketlists')
 auth = HTTPTokenAuth('Token')
 
@@ -24,8 +28,8 @@ def custom400(error):
 
 @auth.verify_token
 def verify_token(token):
-    """Receives token and verifies it, the username and time_created
-     must return True or False"""
+    """Receives token and verifies it, the username
+     must return True or error response"""
     if token:
         try:
             user_name = token_signer.unsign(token)
@@ -61,6 +65,11 @@ def verify_token(token):
 @mod_bucketlists.route('/', methods=['GET', 'POST'])
 @auth.login_required
 def get_bucketlists():
+    """
+    Creates and views the bucketlist
+    Returns:
+        JSON file with the bucketlist, 201 on create and 200 on retrieve
+    """
     if request.method == 'GET':
         bucket_lists = BucketList.query.filter_by(created_by=user_id).all()
 
@@ -102,6 +111,14 @@ def get_bucketlists():
 @mod_bucketlists.route('/<id>', methods=['GET', 'PUT', 'DELETE'])
 @auth.login_required
 def get_bucketlist(id):
+    """
+    Get a single bucketlist and items if available. It allows manipulate the bucketlist details
+    Args:
+        id: The id of the bucketlist
+
+    Returns:
+        JSON files with bucketlists details and items; 200 on successfully request
+    """
     bucket_list = BucketList.query.filter_by(id=id, created_by=user_id).scalar()
 
     if not bucket_list:
@@ -176,6 +193,15 @@ def get_bucketlist(id):
 @mod_bucketlists.route('/<id>/items/', methods=['POST'])
 @auth.login_required
 def create_bucketlist_item(id):
+    """
+    Creates a new item in the bucketlist
+    Args:
+        id: the bucketlist id to create the item in
+
+    Returns:
+        JSON file with details of created bucketlist item; 201 on succeful request
+
+    """
     bucket_list = BucketList.query.filter_by(id=id, created_by=user_id).scalar()
 
     if not bucket_list:
@@ -223,6 +249,16 @@ def create_bucketlist_item(id):
 @mod_bucketlists.route('/<id>/items/<item_id>', methods=['PUT', 'DELETE'])
 @auth.login_required
 def modify_bucketlist_item(id, item_id):
+    """
+    Updates or deletes the bucketlist items
+    Args:
+        id: bucketlist id
+        item_id:  bucketlist item id
+
+    Returns:
+        JSON file with the details of the modified bucketlist item; 200 on successful request
+
+    """
     bucketlist_item = BucketListItem.query.filter_by(bucketlist_id=id, id=item_id).scalar()
 
     if not bucketlist_item:
