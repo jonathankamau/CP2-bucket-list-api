@@ -1,7 +1,7 @@
 # encoding: utf-8
-from flask import Blueprint, jsonify
-from flask import request
+from flask import Blueprint, jsonify, abort, request
 
+from app import app
 from app.mod_auth.models import User
 
 mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
@@ -9,6 +9,16 @@ mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 """
 provides the routes to register and login a user. It also display the token for API
 """
+
+
+@app.errorhandler(401)
+def custom401error(exception):
+    return jsonify(exception.description), 401
+
+
+@app.errorhandler(400)
+def custom401error(exception):
+    return jsonify(exception.description), 400
 
 
 @mod_auth.route('/register/', methods=['POST'])
@@ -21,51 +31,33 @@ def register():
     password = request.form.get('password')
 
     if not username:
-        return jsonify({
+        return abort(400, {
             'error': {
-                'message': 'unable to create user',
-                'details': [
-                    {
-                        'target': 'username',
-                        'message': 'username data field missing/empty from POST request'
-                    }
-                ]
+                'message': 'username data field missing/empty from POST request'
             }
-        }), 400
+        })
 
     if not password:
-        return jsonify({
+        abort(400, {
             'error': {
-                'message': 'unable to create user',
-                'details': [
-                    {
-                        'target': 'password',
-                        'message': 'password data field missing/empty from POST request'
-                    }
-                ]
+                'message': 'password data field missing/empty from POST request'
             }
-        }), 400
+        })
 
     if User.query.filter_by(username=username).scalar():
-        return jsonify({
+        abort(400, {
             'error': {
-                'message': 'unable to create user',
-                'details': [
-                    {
-                        'target': 'username',
-                        'message': 'username already registered'
-                    }
-                ]
+                'message': 'username already registered'
             }
-        }), 400
+        })
 
     user = User(username, password)
     user.save()
     user.refresh_from_db()
 
     return jsonify({
-            'username': user.username,
-            'message': 'new user created successfully'
+        'username': user.username,
+        'message': 'new user created successfully'
     }), 201
 
 
@@ -80,42 +72,31 @@ def login():
     password = request.form.get('password')
 
     if not username:
-        return jsonify({
+        abort(400, {
             'error': {
-                'message': 'unable to login user',
-                'details': [
-                    {
-                        'target': 'username',
-                        'message': 'username data field missing/empty from POST request'
-                    }
-                ]
+                'message': 'username data field missing/empty from POST request'
             }
-        }), 400
+        })
 
     if not password:
-        return jsonify({
+        abort(400, {
             'error': {
-                'message': 'unable to login user',
-                'details': [
-                    {
-                        'target': 'password',
-                        'message': 'password data field missing/empty from POST request'
-                    }
-                ]
+                'message': 'password data field missing/empty from POST request'
             }
-        }), 400
+
+        })
 
     user = User.query.filter_by(username=username).first()
 
     if user and user.verify_password_hash(password):
         return jsonify({
-                'message': 'login successful. Use token for authentication for the API',
-                'username': user.username,
-                'token': user.token.decode()
+            'message': 'login successful. Use token for authentication for the API',
+            'username': user.username,
+            'token': user.token.decode()
         })
 
-    return jsonify({
+    abort(401, {
         'error': {
             'message': 'invalid username/password combination'
         }
-    }), 401
+    })
