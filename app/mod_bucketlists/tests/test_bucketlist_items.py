@@ -13,7 +13,6 @@ class BucketListItemTestCase(BaseTestCase):
         self.assertIn('date_modified', response)
         self.assertIn(data['name'], response)
         self.assertIn(data['description'], response)
-        self.assertIn('successfully created bucketlist item', response)
 
     def test_error_on_create_item_on_non_existent_bucketlist(self):
         data = {'name': 'Change Title Of Story'}
@@ -41,7 +40,6 @@ class BucketListItemTestCase(BaseTestCase):
         response = self.client.put('/bucketlists/1/items/1', data=data, headers=self.token, follow_redirects=True)
 
         response = response.data.decode('utf-8')
-        self.assertIn('successfully updated bucketlist item', response)
         self.assertIn(data['name'], response)
         self.assertIn(data['description'], response)
 
@@ -51,7 +49,13 @@ class BucketListItemTestCase(BaseTestCase):
 
         response = response.data.decode('utf-8')
         self.assertIn('true', response)
-        self.assertIn('successfully updated bucketlist item', response)
+
+    def test_update_bucketlist_item_to_not_done(self):
+        data = {'done': 'false'}
+        response = self.client.put('/bucketlists/1/items/1', data=data, headers=self.token, follow_redirects=True)
+
+        response = response.data.decode('utf-8')
+        self.assertIn('false', response)
 
     def test_error_on_updating_non_existent_bucketlist_item(self):
         data = {'name': 'Updated name for item',
