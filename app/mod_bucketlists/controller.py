@@ -39,8 +39,7 @@ def verify_token(token):
                 if token != user.token.decode():
                     abort(403, {
                         'error': {
-                            'message': 'expired token supplied',
-                            'target': 'token'
+                            'message': 'expired token supplied'
                         }
                     })
 
@@ -48,15 +47,13 @@ def verify_token(token):
         except (BadTimeSignature, BadSignature):
             abort(403, {
                 'error': {
-                    'message': 'invalid token supplied',
-                    'target': 'token'
+                    'message': 'invalid token supplied'
                 }
             })
 
     return abort(401, {
         'error': {
-            'message': 'no token to submitted',
-            'target': 'token'
+            'message': 'no token to submitted'
         }
     })
 
@@ -82,17 +79,12 @@ def get_bucketlists():
         bucketlist_name = request.form.get('bucket_name')
 
         if BucketList.query.filter_by(name=bucketlist_name).scalar():
-            return jsonify({
+            return abort(400, {
                 'error': {
-                    'message': 'unable to create new bucket list',
-                    'details': [
-                        {
-                            'target': 'bucket_name',
                             'message': 'bucket with same name already exists'
                         }
-                    ]
-                }
-            }), 400
+
+            })
 
         bucket_list = BucketList(bucketlist_name, user_id)
         bucket_list.save()
@@ -115,21 +107,14 @@ def get_bucketlist(id):
     if not bucket_list:
         return jsonify({
             'error': {
-                'message': 'bucket list not found',
-                'details': [
-                    {
-                        'target': 'id',
-                        'message': 'BucketList with id provided not found'
+                        'message': 'bucket list not found'
                     }
-                ]
-            }
         }), 404
 
     if request.method == 'GET':
         bucket_list_items = BucketListItem.query.filter_by(bucketlist_id=bucket_list.id).all()
 
         return jsonify({
-            'data': {
                 'id': bucket_list.id,
                 'name': bucket_list.name,
                 'date_created': bucket_list.date_created,
@@ -143,38 +128,27 @@ def get_bucketlist(id):
                         'date_modified': bucket_list_item.date_modified,
                         'done': bucket_list_item.done
                     } for bucket_list_item in bucket_list_items
-                    ]
-            }
+                ]
         })
 
     elif request.method == 'PUT':
         new_bucketlist_name = request.form.get('name')
 
         if not new_bucketlist_name:
-            return jsonify({
+            return abort(400, {
                 'error': {
-                    'message': 'unable to create new bucket list item',
-                    'details': [
-                        {
-                            'target': 'name',
                             'message': 'name data field missing/empty from POST request'
                         }
-                    ]
-                }
-            }), 400
+
+            })
 
         if new_bucketlist_name == bucket_list.name:
-            return jsonify({
+            return abort(403, {
                 'error': {
-                    'message': 'new BucketList name is equal to new name',
-                    'details': [
-                        {
-                            'target': 'name',
                             'message': 'new BucketList name is equal to new name'
-                        }
-                    ]
+
                 }
-            }), 403
+            })
 
         bucket_list.name = new_bucketlist_name
         bucket_list.save()
@@ -216,26 +190,21 @@ def create_bucketlist_item(id):
         description = request.form.get('description')
 
         if not name:
-            return jsonify({
+            return abort(400, {
                 'error': {
-                    'message': 'unable to create bucketlist item',
-                    'details': [
-                        {
-                            'target': 'name',
                             'message': 'name data field missing/empty from POST request'
                         }
-                    ]
-                }
-            }), 400
+
+            })
 
         bucketlist_item = BucketListItem.query.filter_by(name=name).all()
 
         if bucketlist_item:
-            return jsonify({
+            return abort(403, {
                 'error': {
                     'message': 'cannot create bucketlist item'
                 }
-            }), 403
+            })
 
         bucketlist_item = BucketListItem(name, description, bucket_list.id)
         bucketlist_item.save()
@@ -266,11 +235,11 @@ def modify_bucketlist_item(id, item_id):
     if request.method == 'PUT':
         done_status = request.form.get('done', '').lower()
         if done_status and done_status not in ('true', 'false'):
-            return jsonify({
+            return abort(400, {
                 'error': {
                     'message': 'done status should be true or false'
                 }
-            }), 400
+            })
 
         bucketlist_item.name = request.form.get('name', bucketlist_item.name)
         bucketlist_item.done = done_status == 'true'
