@@ -23,7 +23,6 @@ class RegisterTestCase(BaseTestCase):
 
         response = response.data.decode('utf-8')
         self.assertIn('error', response)
-        self.assertIn('unable to create user', response)
         self.assertIn('username data field missing/empty from POST request', response)
 
     def test_registration_fails_no_password(self):
@@ -35,7 +34,6 @@ class RegisterTestCase(BaseTestCase):
 
         response = response.data.decode('utf-8')
         self.assertIn('error', response)
-        self.assertIn('unable to create user', response)
         self.assertIn('password data field missing/empty from POST request', response)
 
     def test_registration_fails_using_existing_username(self):
@@ -48,5 +46,4 @@ class RegisterTestCase(BaseTestCase):
 
         response = response.data.decode('utf-8')
         self.assertIn('error', response)
-        self.assertIn('unable to create user', response)
         self.assertIn('username already registered', response)
