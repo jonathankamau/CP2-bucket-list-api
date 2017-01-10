@@ -42,7 +42,6 @@ class SingleBucketListTestCase(BaseTestCase):
         response = self.client.put('/bucketlists/1', data=data, headers=self.token, follow_redirects=True)
 
         response = response.data.decode('utf-8')
-        self.assertIn('updated bucketlist name', response)
         self.assertIn(data['name'], response)
 
     def test_error_on_updating_bucketlist_name_to_existing_name(self):
