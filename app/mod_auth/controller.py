@@ -6,9 +6,17 @@ from app.mod_auth.models import User
 
 mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 
+"""
+provides the routes to register and login a user. It also display the token for API
+"""
+
 
 @mod_auth.route('/register/', methods=['POST'])
 def register():
+    """
+    Creates a new user when provided username and password via POST
+    Returns: JSON response with status of register user
+    """
     username = request.form.get('username')
     password = request.form.get('password')
 
@@ -63,6 +71,11 @@ def register():
 
 @mod_auth.route('/login/', methods=['POST'])
 def login():
+    """
+    validate the username and password supplied via POST to authenticate the user
+    Returns:
+        JSON response with username, and token
+    """
     username = request.form.get('username')
     password = request.form.get('password')
 
