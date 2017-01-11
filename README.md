@@ -52,8 +52,9 @@ This API enables the user to create bucketlist and list of items in the bucketli
 
 
           $ pip install -r requirements.txt
-          $ python db_create.py
-          $ python db_migrate.py
+          $ python manage.py db init 
+          $ python manage.py db migrate 
+          $ python manage.py db upgrade
 
 6. run server    
 
