@@ -91,7 +91,7 @@ def get_bucketlists():
                     'date_modified': bucket_list.date_modified
                 } for bucket_list in bucket_lists.items
 
-            ],
+                ],
             'next': '{}?q={}&limit={}&page={}'.format(
                 str(url_for('bucketlists.get_bucketlists', _external=True)),
                 str(search_name),
@@ -119,11 +119,13 @@ def get_bucketlists():
         bucket_list.refresh_from_db()
 
         return jsonify({
-            'id': bucket_list.id,
-            'name': bucket_list.name,
-            'created_by': bucket_list.created_by,
-            'date_created': bucket_list.date_created,
-            'date_modified': bucket_list.date_modified
+            'data': {
+                'id': bucket_list.id,
+                'name': bucket_list.name,
+                'created_by': bucket_list.created_by,
+                'date_created': bucket_list.date_created,
+                'date_modified': bucket_list.date_modified
+            }
         }), 201
 
 
@@ -151,20 +153,22 @@ def get_bucketlist(id):
         bucket_list_items = BucketListItem.query.filter_by(bucketlist_id=bucket_list.id).all()
 
         return jsonify({
-            'id': bucket_list.id,
-            'name': bucket_list.name,
-            'date_created': bucket_list.date_created,
-            'date_modified': bucket_list.date_modified,
-            'created_by': bucket_list.created_by,
-            'items': [
-                {
-                    'id': bucket_list_item.id,
-                    'name': bucket_list_item.name,
-                    'date_created': bucket_list_item.date_created,
-                    'date_modified': bucket_list_item.date_modified,
-                    'done': bucket_list_item.done
-                } for bucket_list_item in bucket_list_items
-                ]
+            'data': {
+                'id': bucket_list.id,
+                'name': bucket_list.name,
+                'date_created': bucket_list.date_created,
+                'date_modified': bucket_list.date_modified,
+                'created_by': bucket_list.created_by,
+                'items': [
+                    {
+                        'id': bucket_list_item.id,
+                        'name': bucket_list_item.name,
+                        'date_created': bucket_list_item.date_created,
+                        'date_modified': bucket_list_item.date_modified,
+                        'done': bucket_list_item.done
+                    } for bucket_list_item in bucket_list_items
+                    ]
+            }
         })
 
     elif request.method == 'PUT':
@@ -191,11 +195,13 @@ def get_bucketlist(id):
         bucket_list.refresh_from_db()
 
         return jsonify({
-            'id': bucket_list.id,
-            'name': bucket_list.name,
-            'date_created': bucket_list.date_created,
-            'date_modified': bucket_list.date_modified,
-            'created_by': bucket_list.created_by
+            'data': {
+                'id': bucket_list.id,
+                'name': bucket_list.name,
+                'date_created': bucket_list.date_created,
+                'date_modified': bucket_list.date_modified,
+                'created_by': bucket_list.created_by
+            }
         })
 
     elif request.method == 'DELETE':
@@ -256,12 +262,14 @@ def create_bucketlist_item(id):
         bucketlist_item.refresh_from_db()
 
         return jsonify({
-            'id': bucketlist_item.id,
-            'name': bucketlist_item.name,
-            'description': bucketlist_item.description,
-            'date_created': bucketlist_item.date_created,
-            'date_modified': bucketlist_item.date_modified,
-            'done': bucketlist_item.done
+            'data': {
+                'id': bucketlist_item.id,
+                'name': bucketlist_item.name,
+                'description': bucketlist_item.description,
+                'date_created': bucketlist_item.date_created,
+                'date_modified': bucketlist_item.date_modified,
+                'done': bucketlist_item.done
+            }
         }), 201
 
 
@@ -304,11 +312,13 @@ def modify_bucketlist_item(id, item_id):
         bucketlist_item.refresh_from_db()
 
         return jsonify({
-            'id': bucketlist_item.id,
-            'name': bucketlist_item.name,
-            'description': bucketlist_item.description,
-            'date_created': bucketlist_item.date_created,
-            'date_modified': bucketlist_item.date_modified,
-            'done': bucketlist_item.done
+           'data': {
+                'id': bucketlist_item.id,
+                'name': bucketlist_item.name,
+                'description': bucketlist_item.description,
+                'date_created': bucketlist_item.date_created,
+                'date_modified': bucketlist_item.date_modified,
+                'done': bucketlist_item.done
+            }
 
         })
