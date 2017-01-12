@@ -17,7 +17,7 @@ def custom401error(exception):
 
 
 @app.errorhandler(400)
-def custom401error(exception):
+def custom400error(exception):
     return jsonify(exception.description), 400
 
 
