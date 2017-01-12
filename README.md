@@ -90,8 +90,8 @@ Access the endpoints using your preferred client e.g Postman
     _response_:
     
 		 {
-	        "message": "new user created successfully",
-	        "username": "brian2"
+			"message": "new user created successfully",
+			"username": "brian2"
 		 }
   
 - POST `http://localhost:5000/bucketlists/`
@@ -107,12 +107,14 @@ Access the endpoints using your preferred client e.g Postman
     
    _response_:
     
-		  {
+		 {
+		  "data": {
 		    "created_by": 1,
 		    "date_created": "Tue, 10 Jan 2017 10:17:41 GMT",
 		    "date_modified": "Tue, 10 Jan 2017 10:17:41 GMT",
 		    "id": 1,
 		    "name": "Christmas"
+		  }
 		  }
 		  
 - GET `http://localhost:5000/bucketlists/`
@@ -123,14 +125,18 @@ gets bucketlist for the user with the token supplied
        	Authorization: Token brian2.C1Y5JA.fXefAieGzWOviHlh3lYYLJphk98
        	
    _response_:
-   
-		  [
-		    {
-		      "created_by": 1,
-		      "date_created": "Tue, 10 Jan 2017 10:17:41 GMT",
-		      "date_modified": "Tue, 10 Jan 2017 10:17:41 GMT",
-		      "id": 1,
-		      "name": "Christmas"
-		    }
-		  ]
+   		
+		{
+		  "data": [
+			    {
+			      "created_by": 1,
+			      "date_created": "Tue, 10 Jan 2017 10:17:41 GMT",
+			      "date_modified": "Tue, 10 Jan 2017 10:17:41 GMT",
+			      "id": 1,
+			      "name": "Christmas"
+			    }
+			  ],
+		   "next": null,
+		   "prev": null
+		}
 		   
