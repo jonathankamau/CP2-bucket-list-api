@@ -74,21 +74,23 @@ def get_bucketlists():
 
         page_no = request.args.get('pag_no', 1)
         limit = request.args.get('limit', 20)
+        search_name = request.args.get('q', '')
 
-        bucket_lists = BucketList.query.filter_by(created_by=user_id).paginate(
-            page_no, limit).all()
+        bucket_lists = BucketList.query.filter_by(created_by=user_id) \
+            .filter(BucketList.name.like('%{}%'.format(search_name))) \
+            .paginate(page_no, limit)
 
-        return jsonify(
-            [
+        return jsonify({
+            'data': [
                 {
                     'id': bucket_list.id,
                     'name': bucket_list.name,
                     'created_by': bucket_list.created_by,
                     'date_created': bucket_list.date_created,
                     'date_modified': bucket_list.date_modified
-                } for bucket_list in bucket_lists
-                ]
-        )
+                } for bucket_list in bucket_lists.items
+            ]
+        })
     elif request.method == 'POST':
         bucketlist_name = request.form.get('bucket_name')
 
@@ -137,19 +139,19 @@ def get_bucketlist(id):
         bucket_list_items = BucketListItem.query.filter_by(bucketlist_id=bucket_list.id).all()
 
         return jsonify({
-                'id': bucket_list.id,
-                'name': bucket_list.name,
-                'date_created': bucket_list.date_created,
-                'date_modified': bucket_list.date_modified,
-                'created_by': bucket_list.created_by,
-                'items': [
-                    {
-                        'id': bucket_list_item.id,
-                        'name': bucket_list_item.name,
-                        'date_created': bucket_list_item.date_created,
-                        'date_modified': bucket_list_item.date_modified,
-                        'done': bucket_list_item.done
-                    } for bucket_list_item in bucket_list_items
+            'id': bucket_list.id,
+            'name': bucket_list.name,
+            'date_created': bucket_list.date_created,
+            'date_modified': bucket_list.date_modified,
+            'created_by': bucket_list.created_by,
+            'items': [
+                {
+                    'id': bucket_list_item.id,
+                    'name': bucket_list_item.name,
+                    'date_created': bucket_list_item.date_created,
+                    'date_modified': bucket_list_item.date_modified,
+                    'done': bucket_list_item.done
+                } for bucket_list_item in bucket_list_items
                 ]
         })
 
