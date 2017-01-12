@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify, abort
+from flask import url_for
 from flask_httpauth import HTTPTokenAuth
 from itsdangerous import BadTimeSignature, BadSignature
 
@@ -89,7 +90,18 @@ def get_bucketlists():
                     'date_created': bucket_list.date_created,
                     'date_modified': bucket_list.date_modified
                 } for bucket_list in bucket_lists.items
-            ]
+
+            ],
+            'next': '{}?q={}&limit={}&page={}'.format(
+                str(url_for('bucketlists.get_bucketlists', _external=True)),
+                str(search_name),
+                str(limit),
+                str(page_no + 1)) if bucket_lists.has_next else None,
+            'prev': '{}?q={}&limit={}&page={}'.format(
+                str(url_for('bucketlists.get_bucketlists', _external=True)),
+                str(search_name),
+                str(limit),
+                str(page_no - 1)) if bucket_lists.has_prev else None
         })
     elif request.method == 'POST':
         bucketlist_name = request.form.get('bucket_name')
