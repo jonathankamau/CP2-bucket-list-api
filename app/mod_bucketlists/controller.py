@@ -71,7 +71,12 @@ def get_bucketlists():
         JSON file with the bucketlist, 201 on create and 200 on retrieve
     """
     if request.method == 'GET':
-        bucket_lists = BucketList.query.filter_by(created_by=user_id).all()
+
+        page_no = request.args.get('pag_no', 1)
+        limit = request.args.get('limit', 20)
+
+        bucket_lists = BucketList.query.filter_by(created_by=user_id).paginate(
+            page_no, limit).all()
 
         return jsonify(
             [
@@ -90,8 +95,8 @@ def get_bucketlists():
         if BucketList.query.filter_by(name=bucketlist_name).scalar():
             return abort(400, {
                 'error': {
-                            'message': 'bucket with same name already exists'
-                        }
+                    'message': 'bucket with same name already exists'
+                }
 
             })
 
@@ -124,8 +129,8 @@ def get_bucketlist(id):
     if not bucket_list:
         return jsonify({
             'error': {
-                        'message': 'bucket list not found'
-                    }
+                'message': 'bucket list not found'
+            }
         }), 404
 
     if request.method == 'GET':
@@ -154,15 +159,15 @@ def get_bucketlist(id):
         if not new_bucketlist_name:
             return abort(400, {
                 'error': {
-                            'message': 'name data field missing/empty from POST request'
-                        }
+                    'message': 'name data field missing/empty from POST request'
+                }
 
             })
 
         if new_bucketlist_name == bucket_list.name:
             return abort(403, {
                 'error': {
-                            'message': 'new BucketList name is equal to new name'
+                    'message': 'new BucketList name is equal to new name'
 
                 }
             })
@@ -218,8 +223,8 @@ def create_bucketlist_item(id):
         if not name:
             return abort(400, {
                 'error': {
-                            'message': 'name data field missing/empty from POST request'
-                        }
+                    'message': 'name data field missing/empty from POST request'
+                }
 
             })
 
