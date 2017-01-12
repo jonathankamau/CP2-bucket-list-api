@@ -79,7 +79,7 @@ def get_bucketlists():
 
         bucket_lists = BucketList.query.filter_by(created_by=user_id) \
             .filter(BucketList.name.like('%{}%'.format(search_name))) \
-            .paginate(page_no, limit)
+            .paginate(int(page_no), int(limit))
 
         return jsonify({
             'data': [
