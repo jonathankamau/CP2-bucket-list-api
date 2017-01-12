@@ -21,9 +21,6 @@ class BucketList(db.Model):
     def refresh_from_db(self):
         return db.session.query(BucketList).filter_by(id=str(self.id))
 
-    def __repr__(self, *args, **kwargs):
-        return " {}: {}, {}".format(self.id, self.name, self.created_by)
-
 
 class BucketListItem(db.Model):
     __tablename__ = 'BucketlistItems'
@@ -47,6 +44,3 @@ class BucketListItem(db.Model):
 
     def refresh_from_db(self):
         return db.session.query(BucketListItem).filter_by(id=str(self.id))
-
-    def __repr__(self):
-        return "id,{}: name:{}, done:{} desc:{}".format(self.id, self.name, self.done, self.description)

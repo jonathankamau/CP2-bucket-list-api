@@ -57,6 +57,12 @@ class BucketListItemTestCase(BaseTestCase):
         response = response.data.decode('utf-8')
         self.assertIn('false', response)
 
+    def test_update_bucketlist_item_invalid_status(self):
+        data = {'done': 'ffdse'}
+        response = self.client.put('/bucketlists/1/items/1', data=data, headers=self.token, follow_redirects=True)
+
+        self.assertEqual(400, response.status_code)
+
     def test_error_on_updating_non_existent_bucketlist_item(self):
         data = {'name': 'Updated name for item',
                 'description': 'Test change name'}
