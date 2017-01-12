@@ -22,6 +22,16 @@ class BucketListTestCase(BaseTestCase):
         self.assertIn('created_by', response)
         self.assertIn('date_created', response)
 
+    def test_search_bucketlist_by_name(self):
+        response = self.client.get('/bucketlists/?q=Check', headers=self.token, follow_redirects=True)
+
+        response = response.data.decode('utf-8')
+        self.assertIn('Checkpoint', response)
+        self.assertIn('created_by', response)
+        self.assertIn('date_created', response)
+        self.assertIn('next', response)
+        self.assertIn('prev', response)
+
     def test_error_on_bucketlist_creation_with_invalid_token(self):
         data = {
             'bucket_name': 'Christmas'
