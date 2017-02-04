@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from itsdangerous import TimestampSigner
+from flask_cors import CORS, cross_origin
 
 import config
 
@@ -8,6 +9,7 @@ app = Flask(__name__)
 
 app.config.from_object('config')
 db = SQLAlchemy(app)
+CORS(app)
 
 token_signer = TimestampSigner(config.SECRET_KEY)
 

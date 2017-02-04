@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify, abort
+from flask import json
 from flask import url_for
 from flask_httpauth import HTTPTokenAuth
 from itsdangerous import BadTimeSignature, BadSignature
@@ -106,7 +107,8 @@ def create_bucketlist():
     Returns:
         JSON file with the bucketlist, 201 on create and 200 on retrieve
     """
-    bucketlist_name = request.form.get('bucket_name')
+    json_data = json.loads(request.data)
+    bucketlist_name = json_data.get('bucket_name')
 
     if BucketList.query.filter_by(name=bucketlist_name).scalar():
         return abort(400, {

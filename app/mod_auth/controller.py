@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify, abort, request
 
 from app import app
 from app.mod_auth.models import User
+import json
 
 mod_auth = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -27,8 +28,10 @@ def register():
     Creates a new user when provided username and password via POST
     Returns: JSON response with status of register user
     """
-    username = request.form.get('username')
-    password = request.form.get('password')
+
+    json_data = json.loads(request.data)
+    username = json_data.get('username')
+    password = json_data.get('password')
 
     if not username:
         return abort(400, {
@@ -68,8 +71,9 @@ def login():
     Returns:
         JSON response with username, and token
     """
-    username = request.form.get('username')
-    password = request.form.get('password')
+    json_data = json.loads(request.data)
+    username = json_data.get('username')
+    password = json_data.get('password')
 
     if not username:
         abort(400, {
