@@ -16,6 +16,8 @@ nosetests.xml
 coverage.xml
 *,cover
 
+.env
+
 # Flask stuff:
 instance/
 .webassets-cache
