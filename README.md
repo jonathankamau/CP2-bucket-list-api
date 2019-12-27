@@ -32,11 +32,11 @@ This API enables the user to create bucketlist and list of items in the bucketli
 2. clone this repo to local
     - Via SSH
 
-          	git clone git@github.com:andela-brotich/CP2-bucket-list-api.git
+          	git clone git@github.com:brotich/CP2-bucket-list-api.git
 
     - via HTTPS
 
-          	git clone https://github.com/andela-brotich/CP2-bucket-list-api.git
+          	git clone https://github.com/brotich/CP2-bucket-list-api.git
           
 3. Navigate to project directory
     
@@ -141,4 +141,3 @@ gets bucketlist for the user with the token supplied
 		   "next": null,
 		   "prev": null
 		}
-		   
